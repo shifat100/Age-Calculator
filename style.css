@@ -1,0 +1,38 @@
+@font-face {
+    font-family: 'customfont';
+    src: url('font.ttf');
+}
+
+
+
+* {
+    font-family: 'customfont';
+    box-sizing: border-box;
+}
+
+#dob,
+#ndate {
+    padding: 5px 3px;
+    margin: 2px;
+    width: 80%;
+}
+
+.button {
+    margin: 5px;
+    background: red;
+    color: white;
+    border-width: 0px 2px 3px 2px;
+    border-style: solid;
+    border-color: #ddd;
+    padding: 7px 20px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+
+.button:hover {
+    background: #000000;
+    color: red;
+
+}
