@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <title>Age Calculator</title>
+</head>
+<body>
+  <div class="header">
+    Calculate Age
+  </div>
+
+  <div class="content">
+    <div class="input-container">
+      <label for="dob">Date Of Birth:</label>
+      <input type="date" id="dob" class="nav-item" tabindex="0">
+    </div>
+
+    <div class="input-container">
+      <label for="ndate">Age at the Date of:</label>
+      <input type="date" id="ndate" class="nav-item" tabindex="1">
+    </div>
+
+    <div id="result"></div>
+
+  </div>
+
+  <div id="ad-container"></div>
+
+  <div class="footer">
+    <div class="softkey">
+      <div id="left-softkey" class="softkey-item">Calculate</div>
+      <div id="center-softkey" class="softkey-item">ad.</div>
+      <div id="right-softkey" class="softkey-item">Exit</div>
+    </div>
+  </div>
+
+  <script src="https://static.kaiads.com/ads-sdk/ads-sdk.v5.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

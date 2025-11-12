@@ -1,84 +1,150 @@
-
-function addZero(e){return(e=new Number(e))<10?"0"+e:e}
-
+function addZero(e) {
+    return (e = new Number(e)) < 10 ? "0" + e : e;
+}
 
 var current = document.getElementById('ndate');
-current.value = new Date().getFullYear()+'-'+addZero(new Date().getMonth()+1)+'-'+addZero(new Date().getDate());
-
+current.value = new Date().getFullYear() + '-' + addZero(new Date().getMonth() + 1) + '-' + addZero(new Date().getDate());
 
 var ordinalSuffix = (n) => {
-    var s = ['th', 'st', 'nd', 'rd']
+    var s = ['th', 'st', 'nd', 'rd'];
     var v = n % 100;
     return n + ' <sup>' + (s[(v - 20) % 10] || s[v] || s[0]) + '</sup>';
 };
+
 function ageCalculator() {
     var userinput = document.getElementById('dob').value;
     var dob = new Date(userinput);
     var current = document.getElementById('ndate').value;
     var date = new Date(current);
+    var result = document.getElementById('result');
 
     if (userinput == '') {
-        document.getElementById('result').style.background = 'black';
-        document.getElementById('result').innerHTML = 'Enter Date Of Birth Please!';
+        result.style.background = 'black';
+        result.style.color = 'white';
+        result.innerHTML = 'Enter Date Of Birth Please!';
+        return;
     }
-    else if (current == '') {
-        document.getElementById('result').style.background = 'black';
-        document.getElementById('result').innerHTML = 'Enter Till Now Date Please!';
+    if (current == '') {
+        result.style.background = 'black';
+        result.style.color = 'white';
+        result.innerHTML = 'Enter "Age at the Date of" Please!';
+        return;
     }
-    else {
 
+    var dobtime = dob.getTime();
+    var datetime = date.getTime();
 
-        var datetime = date.getTime();
-        var dobtime = dob.getTime();
-
-        var differencetime = datetime - dobtime;
-
-        var today = new Date(differencetime);
-        var year_age = today.getFullYear() - 1970;
-        var month_age = today.getMonth();
-
-        var day_age = today.getDate();
-
-        if (dob > date) {
-            document.getElementById('result').style.background = 'black';
-            document.getElementById('result').innerHTML = 'Invalid Date Input. Please Try Again!';
-        }
-        else if ((date.getMonth() == dob.getMonth()) && (date.getDate() == dob.getDate())) {
-            document.getElementById('result').style.background = 'green';
-            document.getElementById('result').innerHTML = '<font color="white" weight="bold">Happy ' + ordinalSuffix(year_age) + ' Birthday!</font>';
-        }
-        else {
-            document.getElementById('result').style.background = 'green';
-            document.getElementById('result').innerHTML = '<b>Age</b>:<br> ' + year_age + ' years ' + month_age + ' months ' + day_age + ' days';
-        }
+    if (dobtime > datetime) {
+        result.style.background = 'black';
+        result.style.color = 'white';
+        result.innerHTML = 'Invalid Date Input. Please Try Again!';
+        return;
     }
+
+    var differencetime = datetime - dobtime;
+
+    var years = date.getFullYear() - dob.getFullYear();
+    var months = date.getMonth() - dob.getMonth();
+    var days = date.getDate() - dob.getDate();
+
+    if (days < 0) {
+        months--;
+        days += new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+    }
+
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    if (date.getMonth() == dob.getMonth() && date.getDate() == dob.getDate()) {
+        result.style.background = 'green';
+        result.style.color = 'white';
+        result.innerHTML = '<font color="white" weight="bold">Happy ' + ordinalSuffix(years) + ' Birthday!</font>';
+    } else {
+        result.style.background = 'green';
+        result.style.color = 'white';
+        result.innerHTML = '<b>Age</b>:<br> ' + years + ' years ' + months + ' months ' + days + ' days';
+    }
+
+    getKaiAd({
+        publisher: '080b82ab-b33a-4763-a498-50f464567e49',
+        app: 'Age Calculator',
+        slot: 'calculator',
+        onerror: (err) => console.error('Custom catch:', err),
+        onready: (ad) => {
+            ad.call('display');
+        }
+    });
 }
-
-
-
-
 
 function handleKeydown(e) {
-    if (e.key == 'SoftRight' || e.key == 'F2') { exit(); }
+    switch (e.key) {
+        case 'Enter':
+            document.querySelector('.items').click();
+            break;
+        case 'SoftLeft':
+        case 'F1':
+        case 'Escape':
+            ageCalculator();
+            break;
+        case 'F2':
+        case 'SoftRight':
+            exit();
+            break;
+        case 'ArrowUp':
+            navigate(-1);
+            break;
+        case 'ArrowDown':
+            navigate(1);
+            break;
+    }
+
 }
+
+function navigate(direction) {
+    var focusable = document.querySelectorAll('.nav-item');
+    var current = document.activeElement;
+    var currentIndex = Array.prototype.indexOf.call(focusable, current);
+    var nextIndex = currentIndex + direction;
+
+    if (nextIndex < 0) {
+        nextIndex = focusable.length - 1;
+    } else if (nextIndex >= focusable.length) {
+        nextIndex = 0;
+    }
+
+    focusable[nextIndex].focus();
+}
+
 
 function exit() {
     var text = 'Are You Sure Want To Exit This App?';
     if (confirm(text) == true) {
         window.close();
-    } else { }
+    }
 }
 
-document.body.addEventListener('keydown', handleKeydown);
-
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.nav-item').focus();
+
     getKaiAd({
         publisher: '080b82ab-b33a-4763-a498-50f464567e49',
         app: 'Age Calculator',
-        slot: 'agecalculator',
+        slot: 'main',
         onerror: (err) => console.error('Custom catch:', err),
         onready: (ad) => {
             ad.call('display');
+            ad.on('close', () => {
+                document.querySelector('.nav-item').focus();
+            });
         },
     });
 });
+
+document.body.addEventListener('keydown', handleKeydown);
+
+
+getKaiAd({ publisher: "080b82ab-b33a-4763-a498-50f464567e49", app: "Age Calculator", slot: "banner-ad", h: 50, w: 240, container: document.getElementById("ad-container"), onerror: e => { }, onready: e => { e.call("display", { tabindex: 0, navClass: "items", display: "block" }) } });
+
+setInterval(function () { getKaiAd({ publisher: "080b82ab-b33a-4763-a498-50f464567e49", app: "Age Calculator", slot: "banner-ad", h: 50, w: 240, container: document.getElementById("ad-container"), onerror: e => { }, onready: e => { e.call("display", { tabindex: 0, navClass: "items", display: "block" }) } }); }, 20000);
