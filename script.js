@@ -66,16 +66,6 @@ function ageCalculator() {
         result.style.color = 'white';
         result.innerHTML = '<b>Age</b>:<br> ' + years + ' years ' + months + ' months ' + days + ' days';
     }
-
-    getKaiAd({
-        publisher: '080b82ab-b33a-4763-a498-50f464567e49',
-        app: 'Age Calculator',
-        slot: 'calculator',
-        onerror: (err) => console.error('Custom catch:', err),
-        onready: (ad) => {
-            ad.call('display');
-        }
-    });
 }
 
 function handleKeydown(e) {
@@ -127,24 +117,6 @@ function exit() {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.nav-item').focus();
-
-    getKaiAd({
-        publisher: '080b82ab-b33a-4763-a498-50f464567e49',
-        app: 'Age Calculator',
-        slot: 'main',
-        onerror: (err) => console.error('Custom catch:', err),
-        onready: (ad) => {
-            ad.call('display');
-            ad.on('close', () => {
-                document.querySelector('.nav-item').focus();
-            });
-        },
-    });
 });
 
 document.body.addEventListener('keydown', handleKeydown);
-
-
-getKaiAd({ publisher: "080b82ab-b33a-4763-a498-50f464567e49", app: "Age Calculator", slot: "banner-ad", h: 50, w: 240, container: document.getElementById("ad-container"), onerror: e => { }, onready: e => { e.call("display", { tabindex: 0, navClass: "items", display: "block" }) } });
-
-setInterval(function () { getKaiAd({ publisher: "080b82ab-b33a-4763-a498-50f464567e49", app: "Age Calculator", slot: "banner-ad", h: 50, w: 240, container: document.getElementById("ad-container"), onerror: e => { }, onready: e => { e.call("display", { tabindex: 0, navClass: "items", display: "block" }) } }); }, 20000);
