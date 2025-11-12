@@ -54,7 +54,7 @@ body {
 
 .content {
     flex-grow: 1; /* Allow content to take up available space */
-    padding: 3em 1em 1em 1em; /* Use ems for padding, will scale with font size */
+    padding: 5px; /* Use ems for padding, will scale with font size */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -102,24 +102,7 @@ input[type="date"]:focus {
     flex-shrink: 0; /* Prevent result from shrinking too much */
 }
 
-#ad-container {
-    /* Use flexbox for positioning within the main content flow */
-    /* This setup makes the ad container part of the content flow,
-       allowing it to scroll with content if content overflows,
-       or position it within a fixed footer area if preferred.
-       For a fixed bottom ad, you might still need position: absolute
-       within a specific container, or put it directly into the footer. */
-    width: 100%;
-    height: 50px; /* Fixed height for ads is common */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0; /* Don't shrink the ad container */
-    /* If you want it always fixed at the bottom above the footer,
-       you'd need to adjust the body's display and use absolute positioning
-       or integrate it more carefully. For now, let's keep it in the flow
-       or put it in the footer. */
-}
+
 
 .footer {
     background-color: red;
