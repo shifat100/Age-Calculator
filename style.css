@@ -3,6 +3,26 @@
     src: url('font.ttf');
 }
 
+/* Base styling using percentages and em units for scalability */
+/* Set a base font size on the root element (html) for 'rem' calculations */
+html {
+    font-size: 10px; /* Base for 1rem = 10px. Adjust this to scale everything */
+}
+
+/* Media queries for smaller screens to adjust base font size */
+@media screen and (max-width: 160px) {
+    html {
+        font-size: 8px; /* Smaller base font for very small screens */
+    }
+}
+@media screen and (max-width: 240px) {
+    html {
+        font-size: 9px; /* Slightly larger for 240px wide screens */
+    }
+}
+/* You could add more media queries for specific larger phone sizes if needed */
+
+
 * {
     box-sizing: border-box;
     font-family: 'customfont', sans-serif;
@@ -11,105 +31,119 @@
 body {
     margin: 0;
     padding: 0;
-    width: 240px;
-    height: 320px;
+    width: 100vw; /* Use viewport width */
+    height: 100vh; /* Use viewport height */
     background-color: #f5f5f5;
     color: #333;
     overflow: hidden; /* Prevent scrolling */
+    display: flex; /* Use flexbox for main layout */
+    flex-direction: column; /* Stack header, content, footer vertically */
 }
 
 .header {
     background-color: red;
     color: white;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 1.6em; /* Relative to parent font-size */
     text-align: center;
-    padding: 5px 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 10;
+    padding: 0.5em 0;
+    /* position: fixed; This is usually not ideal with flexbox for main layout */
+    /* top: 0; left: 0; width: 100%; z-index: 10; */
+    flex-shrink: 0; /* Don't shrink the header */
 }
 
 .content {
-    padding: 30px 10px 50px 10px; /* Adjust padding to avoid overlap with header/footer */
-    height: 100%;
+    flex-grow: 1; /* Allow content to take up available space */
+    padding: 3em 1em 1em 1em; /* Use ems for padding, will scale with font size */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    overflow-y: auto; /* Allow scrolling within content if it overflows */
+    -webkit-overflow-scrolling: touch; /* For smoother scrolling on some devices */
 }
 
 .input-container {
-    margin-bottom: 8px;
+    margin-bottom: 0.8em; /* Relative margin */
 }
 .input-container:nth-child(1) {
-    margin-top: 5px;
+    margin-top: 0.5em; /* Relative margin */
 }
 
 label {
     display: block;
-    margin-bottom: 5px;
-    font-size: 14px;
+    margin-bottom: 0.5em; /* Relative margin */
+    font-size: 1.4em; /* Relative font size */
 }
 
 input[type="date"] {
     width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
+    padding: 0.8em; /* Relative padding */
+    font-size: 1.4em; /* Relative font size */
+    border: 1px solid #ccc; /* 1px is often fine for small screens, or use 0.1em */
+    border-radius: 0.3em; /* Relative border-radius */
+    min-height: 2.8em; /* Ensure a minimum touch target height */
 }
 
 input[type="date"]:focus {
-    outline: 2px solid red;
+    outline: 0.2em solid red; /* Relative outline thickness */
 }
 
 
 #result {
-    margin-top: 10px;
-    padding: 10px;
-    min-height: 60px;
+    margin-top: 1em; /* Relative margin */
+    padding: 1em; /* Relative padding */
+    min-height: 6em; /* Relative minimum height */
     background-color: #eee;
-    border-radius: 3px;
-    font-size: 14px;
+    border-radius: 0.3em; /* Relative border-radius */
+    font-size: 1.4em; /* Relative font size */
     text-align: center;
-    line-height: 1.4;
+    line-height: 1.4; /* Unitless line-height scales with font-size */
     font-weight: bold;
+    flex-shrink: 0; /* Prevent result from shrinking too much */
 }
 
 #ad-container {
-    position: absolute;
-    bottom: 80px; /* Position above the footer */
-    left: 0;
+    /* Use flexbox for positioning within the main content flow */
+    /* This setup makes the ad container part of the content flow,
+       allowing it to scroll with content if content overflows,
+       or position it within a fixed footer area if preferred.
+       For a fixed bottom ad, you might still need position: absolute
+       within a specific container, or put it directly into the footer. */
     width: 100%;
-    height: 50px;
+    height: 50px; /* Fixed height for ads is common */
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0; /* Don't shrink the ad container */
+    /* If you want it always fixed at the bottom above the footer,
+       you'd need to adjust the body's display and use absolute positioning
+       or integrate it more carefully. For now, let's keep it in the flow
+       or put it in the footer. */
 }
 
 .footer {
     background-color: red;
     color: white;
     font-weight: bold;
-    font-size: 14px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 10;
+    font-size: 1.4em; /* Relative font size */
+    /* position: fixed; */
+    /* bottom: 0; left: 0; width: 100%; z-index: 10; */
+    flex-shrink: 0; /* Don't shrink the footer */
+    display: flex; /* Use flexbox for softkeys */
+    flex-direction: column; /* Stack ad-container and softkeys if ad is here */
 }
 
 .softkey {
     display: flex;
     justify-content: space-between;
-    padding: 5px 10px;
+    padding: 0.5em 1em; /* Relative padding */
+    flex-shrink: 0;
 }
 
 .softkey-item {
     flex-grow: 1;
     text-align: center;
+    /* Optional: Add min-width or flex-basis if items become too squished */
 }
 
 #right-softkey {
@@ -118,4 +152,24 @@ input[type="date"]:focus {
 
 #left-softkey {
     text-align: left;
+}
+
+/* Specific styling for the Calculate button (assuming it has a class like 'button' or similar) */
+/* If your button is also a 'nav-item' or 'items', ensure its styling scales */
+.items { /* Assuming '.items' is your calculate button based on JS */
+    background-color: #4CAF50; /* Example button style */
+    color: white;
+    padding: 1em 1.5em; /* Relative padding */
+    border: none;
+    border-radius: 0.5em; /* Relative border-radius */
+    font-size: 1.6em; /* Relative font size */
+    text-align: center;
+    text-decoration: none;
+    display: block; /* Make it a block element to take full width if needed */
+    margin: 1em auto; /* Center the button */
+    width: 80%; /* Example width, adjust as needed */
+    max-width: 20em; /* Max width to prevent it from getting too wide on large screens */
+}
+.items:focus {
+    outline: 0.2em solid blue; /* Focus style */
 }
