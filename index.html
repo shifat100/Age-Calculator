@@ -1,39 +1,396 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
-  <meta charset="utf-8" />
-  <title>Age Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Age Calc</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    body { font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .hide { display: none !important; }
+    
+    /* Navigation Focus Styles for Cloud Phone */
+    .nav-item:focus { 
+      outline: none; 
+      background-color: #05AEF2 !important; 
+      color: white !important; 
+      border-color: #05AEF2 !important;
+    }
+    /* Change child text colors when parent is focused for better contrast */
+    .nav-item:focus .sub-text, 
+    .nav-item:focus .sub-text-value { color: #ffffff !important; opacity: 1 !important; }
+    .nav-item:focus .ad-badge { background-color: #ffffff !important; color: #05AEF2 !important; }
+    .nav-item:focus .border-gray-700 { border-color: #ffffff !important; opacity: 0.5; }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cm-gray-020': '#202020',
+            'cm-blue-009': '#0093E0',
+            'cm-blue-05a': '#05AEF2',
+            'cm-green-00a': '#00A539',
+          },
+          screens: {
+            'cm-qqvga': {'max': '8rem'}, /* 128px max */
+            'cm-qvga': {'min': '15rem'}, /* 240px min */
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-  <div class="header">
-    Calculate Age
-  </div>
+<body class="h-screen w-screen bg-cm-gray-020 text-white overflow-hidden flex flex-col select-none">
 
-  <div class="content">
-    <div class="input-container">
-      <label for="dob">Date Of Birth:</label>
-      <input type="date" id="dob" class="nav-item" tabindex="0">
-    </div>
+  <!-- Header -->
+  <header class="flex-none bg-cm-blue-009 h-[20px] cm-qvga:h-[35px] flex items-center justify-center font-bold text-[10px] cm-qvga:text-sm shrink-0 w-full z-20 shadow-md tracking-wider">
+    PRO AGE CALC
+  </header>
 
-    <div class="input-container">
-      <label for="ndate">Age at the Date of:</label>
-      <input type="date" id="ndate" class="nav-item" tabindex="1">
-    </div>
-
-    <div id="result"></div>
-
-  </div>
-
-  <div class="footer">
-    <div class="softkey">
-      <div id="left-softkey" class="softkey-item">Calculate</div>
-      <div id="center-softkey" class="softkey-item"></div>
-      <div id="right-softkey" class="softkey-item">Exit</div>
+  <!-- Ad Container -->
+  <div id="ad-container" class="nav-item flex-none w-full bg-black border-b border-gray-800 h-[20px] cm-qvga:h-[35px] flex items-center justify-center overflow-hidden transition-all outline-none" tabindex="0">
+    <div class="flex items-center gap-1.5 opacity-80">
+      <span class="ad-badge text-[7px] cm-qvga:text-[9px] bg-gray-700 px-1 rounded text-gray-300 uppercase font-bold transition-colors">Ad</span>
+      <div class="sub-text text-[8px] cm-qvga:text-[11px] text-gray-400 truncate italic whitespace-nowrap transition-colors">
+        Pro Feature: Detailed Stats Unlocked!
+      </div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Main Content (4pt QQVGA / 8pt QVGA Padding) -->
+  <main id="main-screen" class="flex-1 overflow-y-auto p-1 cm-qvga:p-2 flex flex-col gap-1.5 cm-qvga:gap-3">
+    
+    <!-- Date of Birth Slot -->
+    <div id="dob-trigger" class="nav-item bg-black border border-gray-700 rounded p-1.5 cm-qvga:p-2 transition-all cursor-pointer flex flex-col" tabindex="0">
+      <div class="text-[11px] cm-qvga:text-[15px] font-bold leading-tight uppercase tracking-wide">Date of Birth</div>
+      <div id="dob-val" class="sub-text text-[9px] cm-qvga:text-[13px] text-gray-500 font-mono mt-0.5 tracking-widest">**/**/****</div>
+    </div>
+
+    <!-- Calculation Date Slot -->
+    <div id="ndate-trigger" class="nav-item bg-black border border-gray-700 rounded p-1.5 cm-qvga:p-2 transition-all cursor-pointer flex flex-col" tabindex="0">
+      <div class="text-[11px] cm-qvga:text-[15px] font-bold leading-tight uppercase tracking-wide">Calculate On</div>
+      <div id="ndate-val" class="sub-text text-[9px] cm-qvga:text-[13px] text-gray-500 font-mono mt-0.5 tracking-widest">**/**/****</div>
+    </div>
+
+    <!-- PRO Result Display Slot -->
+    <div id="result" class="nav-item bg-black border-2 border-dashed border-gray-800 rounded p-1.5 cm-qvga:p-2 flex flex-col justify-center text-center transition-all min-h-[40px] cm-qvga:min-h-[60px]" tabindex="0">
+      <span class="sub-text text-gray-600 italic text-[9px] cm-qvga:text-[12px]">Awaiting Input...</span>
+    </div>
+  </main>
+
+  <!-- CALENDAR MODAL -->
+  <div id="calendar-modal" class="hide fixed inset-0 bg-cm-gray-020 z-30 flex flex-col">
+    <div class="bg-cm-blue-009 h-[20px] cm-qvga:h-[30px] flex items-center justify-between px-1.5 cm-qvga:px-2 font-bold shrink-0">
+      <span id="picker-title" class="text-[9px] cm-qvga:text-xs">Select Date</span>
+      <span id="picker-breadcrumb" class="opacity-70 text-[7px] cm-qvga:text-[10px]">Y &gt; M &gt; D</span>
+    </div>
+    
+    <div class="flex-1 p-1 cm-qvga:p-2 flex flex-col justify-center overflow-hidden">
+      <div id="view-year" class="grid grid-cols-3 gap-1 hide"></div>
+      <div id="view-month" class="grid grid-cols-3 gap-1 hide"></div>
+      <div id="view-day" class="flex flex-col hide">
+        <div class="grid grid-cols-7 text-center text-[8px] cm-qvga:text-[11px] text-gray-400 mb-1 font-bold">
+          <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+        </div>
+        <div id="days-grid" class="grid grid-cols-7 gap-1"></div>
+      </div>
+    </div>
+
+    <div class="bg-cm-blue-009 h-[20px] cm-qvga:h-[30px] flex justify-between items-center px-1.5 cm-qvga:px-2 font-bold shrink-0">
+      <div class="w-1/3 text-left text-[8px] cm-qvga:text-[11px] uppercase">Select</div>
+      <div class="w-1/3 text-center opacity-50 text-[7px] cm-qvga:text-[9px] uppercase">D-Pad</div>
+      <div class="w-1/3 text-right text-[8px] cm-qvga:text-[11px] uppercase">Back</div>
+    </div>
+  </div>
+
+  <!-- Main Softkey Bar -->
+  <footer id="main-softkeys" class="flex-none bg-cm-blue-009 h-[20px] cm-qvga:h-[30px] flex justify-between items-center px-1.5 cm-qvga:px-2 font-bold shrink-0 w-full z-10">
+    <div class="text-[9px] cm-qvga:text-[12px] text-left w-1/3 uppercase">Calc</div>
+    <div class="text-[7px] cm-qvga:text-[10px] text-center w-1/3 uppercase opacity-70">Menu</div>
+    <div class="text-[9px] cm-qvga:text-[12px] text-right w-1/3 uppercase">Back</div>
+  </footer>
+
+  <script>
+    const state = {
+      activeField: null, 
+      dob: null,
+      ndate: new Date(),
+      calDate: new Date(), 
+      focusedIdx: 0,
+      yearGridStart: 0,
+      mode: 'year', 
+      isModalOpen: false
+    };
+
+    const months =["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const elements = {
+      dobTrigger: document.getElementById('dob-trigger'),
+      ndateTrigger: document.getElementById('ndate-trigger'),
+      dobVal: document.getElementById('dob-val'),
+      ndateVal: document.getElementById('ndate-val'),
+      result: document.getElementById('result'),
+      modal: document.getElementById('calendar-modal'),
+      viewYear: document.getElementById('view-year'),
+      viewMonth: document.getElementById('view-month'),
+      viewDay: document.getElementById('view-day'),
+      daysGrid: document.getElementById('days-grid'),
+      title: document.getElementById('picker-title'),
+      mainSoftkeys: document.getElementById('main-softkeys'),
+    };
+
+    function init() {
+      updateTriggerText('ndate'); 
+      updateTriggerText('dob');   
+      elements.dobTrigger.focus();
+    }
+
+    function updateTriggerText(field) {
+      const date = field === 'dob' ? state.dob : state.ndate;
+      const el = field === 'dob' ? elements.dobVal : elements.ndateVal;
+      
+      if (date) {
+        const d = date.getDate().toString().padStart(2, '0');
+        const m = (date.getMonth() + 1).toString().padStart(2, '0');
+        const y = date.getFullYear();
+        el.innerText = `${d}/${m}/${y}`;
+        el.classList.remove('text-gray-500');
+        el.classList.add('text-cm-blue-05a');
+      } else {
+        el.innerText = '**/**/****';
+        el.classList.add('text-gray-500');
+        el.classList.remove('text-cm-blue-05a');
+      }
+    }
+
+    function openCalendar(field) {
+      state.activeField = field;
+      state.isModalOpen = true;
+      state.mode = 'year';
+      state.calDate = field === 'dob' ? (state.dob || new Date(1990, 0, 1)) : (state.ndate || new Date());
+      state.focusedIdx = state.calDate.getFullYear();
+      state.yearGridStart = state.focusedIdx - 4; 
+      
+      elements.modal.classList.remove('hide');
+      elements.mainSoftkeys.classList.add('hide');
+      renderPicker();
+    }
+
+    function renderPicker() {
+      [elements.viewYear, elements.viewMonth, elements.viewDay].forEach(v => v.classList.add('hide'));
+      
+      if (state.mode === 'year') {
+        elements.viewYear.classList.remove('hide');
+        elements.title.innerText = "Select Year";
+        elements.viewYear.innerHTML = '';
+        
+        for (let i = 0; i < 12; i++) {
+          const yr = state.yearGridStart + i;
+          const div = document.createElement('div');
+          div.innerText = yr;
+          div.className = `text-center py-1.5 cm-qvga:py-2 rounded border border-gray-800 text-[10px] cm-qvga:text-[14px] ${yr === state.focusedIdx ? 'bg-cm-blue-05a font-bold text-white' : 'bg-black text-gray-300'}`;
+          elements.viewYear.appendChild(div);
+        }
+      } else if (state.mode === 'month') {
+        elements.viewMonth.classList.remove('hide');
+        elements.title.innerText = "Select Month";
+        elements.viewMonth.innerHTML = '';
+        
+        months.forEach((m, idx) => {
+          const div = document.createElement('div');
+          div.innerText = m;
+          div.className = `text-center py-1.5 cm-qvga:py-2 rounded border border-gray-800 text-[10px] cm-qvga:text-[14px] uppercase ${idx === state.focusedIdx ? 'bg-cm-blue-05a font-bold text-white' : 'bg-black text-gray-300'}`;
+          elements.viewMonth.appendChild(div);
+        });
+      } else {
+        elements.viewDay.classList.remove('hide');
+        elements.title.innerText = "Select Day";
+        renderDays();
+      }
+    }
+
+    function renderDays() {
+      elements.daysGrid.innerHTML = '';
+      const year = state.calDate.getFullYear();
+      const month = state.calDate.getMonth();
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < firstDay; i++) elements.daysGrid.appendChild(document.createElement('div'));
+      for (let d = 1; d <= daysInMonth; d++) {
+        const div = document.createElement('div');
+        div.innerText = d;
+        div.className = `text-center py-1 cm-qvga:py-2 rounded border border-gray-800 text-[9px] cm-qvga:text-[12px] ${d === state.focusedIdx ? 'bg-cm-blue-05a font-bold text-white' : 'bg-black text-gray-300'}`;
+        elements.daysGrid.appendChild(div);
+      }
+    }
+
+    function handlePickerSelection() {
+      if (state.mode === 'year') {
+        state.calDate.setFullYear(state.focusedIdx);
+        state.mode = 'month';
+        state.focusedIdx = state.calDate.getMonth();
+      } else if (state.mode === 'month') {
+        state.calDate.setMonth(state.focusedIdx);
+        state.mode = 'day';
+        state.focusedIdx = state.calDate.getDate();
+      } else {
+        state.calDate.setDate(state.focusedIdx);
+        if (state.activeField === 'dob') state.dob = new Date(state.calDate);
+        else state.ndate = new Date(state.calDate);
+        updateTriggerText(state.activeField);
+        closeModal();
+        return;
+      }
+      renderPicker();
+    }
+
+    function closeModal() {
+      state.isModalOpen = false;
+      elements.modal.classList.add('hide');
+      elements.mainSoftkeys.classList.remove('hide');
+      state.activeField === 'dob' ? elements.dobTrigger.focus() : elements.ndateTrigger.focus();
+    }
+
+    function calculateAge() {
+      if (!state.dob) { 
+        elements.result.innerHTML = `<span class="sub-text text-red-500 font-bold uppercase text-[9px] cm-qvga:text-xs">Set DOB First</span>`; 
+        elements.result.focus(); 
+        return; 
+      }
+      const dob = state.dob;
+      const now = state.ndate;
+      if (dob > now) { 
+        elements.result.innerHTML = `<span class="sub-text text-red-500 font-bold uppercase text-[9px] cm-qvga:text-xs">Invalid Sequence</span>`; 
+        elements.result.focus(); 
+        return; 
+      }
+
+      // Main Age Calculation
+      let years = now.getFullYear() - dob.getFullYear();
+      let months = now.getMonth() - dob.getMonth();
+      let days = now.getDate() - dob.getDate();
+      if (days < 0) { months--; days += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+      if (months < 0) { years--; months += 12; }
+
+      // Extra Stats
+      const diffTime = Math.abs(now - dob);
+      const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const totalWeeks = Math.floor(totalDays / 7);
+      const totalMonths = (years * 12) + months;
+
+      // Next Birthday Calculation
+      let nextBday = new Date(now.getFullYear(), dob.getMonth(), dob.getDate());
+      if (now > nextBday) nextBday.setFullYear(now.getFullYear() + 1);
+      
+      let nbm = nextBday.getMonth() - now.getMonth();
+      let nbd = nextBday.getDate() - now.getDate();
+      if (nbd < 0) {
+          nbm--;
+          let prevMonth = new Date(nextBday.getFullYear(), nextBday.getMonth(), 0).getDate();
+          nbd += prevMonth;
+      }
+      if (nbm < 0) { nbm += 12; }
+
+      // Build PRO Output
+      elements.result.innerHTML = `
+        <div class="w-full text-left flex flex-col gap-1.5 cm-qvga:gap-2">
+          <!-- Total Age -->
+          <div>
+            <div class="sub-text text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-0.5 tracking-wider">Current Age</div>
+            <div class="text-[12px] cm-qvga:text-[18px] font-bold">${years}Y ${months}M ${days}D</div>
+          </div>
+          
+          <!-- Next Birthday -->
+          <div>
+            <div class="sub-text text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-0.5 tracking-wider">Next Birthday</div>
+            <div class="sub-text-value text-[9px] cm-qvga:text-[13px] text-gray-300 font-bold">${nbm} Months, ${nbd} Days</div>
+          </div>
+
+          <!-- Summary Stats -->
+          <div>
+            <div class="sub-text text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-0.5 tracking-wider">Extra Stats</div>
+            <div class="grid grid-cols-2 text-[8px] cm-qvga:text-[12px] text-gray-400 sub-text gap-x-1">
+              <div>Total Months:</div><div class="font-bold text-right sub-text-value text-gray-200">${totalMonths}</div>
+              <div>Total Weeks:</div><div class="font-bold text-right sub-text-value text-gray-200">${totalWeeks}</div>
+              <div>Total Days:</div><div class="font-bold text-right sub-text-value text-gray-200">${totalDays}</div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Auto focus on result so it scrolls into view on 128x160 screens
+      elements.result.focus();
+    }
+
+    function handleKeydown(e) {
+      if (state.isModalOpen) {
+        switch (e.key) {
+          case 'ArrowUp': 
+            state.focusedIdx -= (state.mode === 'day' ? 7 : 3); 
+            break;
+          case 'ArrowDown': 
+            state.focusedIdx += (state.mode === 'day' ? 7 : 3); 
+            break;
+          case 'ArrowLeft': 
+            state.focusedIdx -= 1; 
+            break;
+          case 'ArrowRight': 
+            state.focusedIdx += 1; 
+            break;
+          case 'Enter':
+          case 'SoftLeft':
+            handlePickerSelection();
+            e.preventDefault();
+            return;
+          case 'Escape':
+          case 'SoftRight':
+            closeModal();
+            e.preventDefault();
+            return;
+        }
+        
+        if (state.mode === 'year') {
+           if (state.focusedIdx < state.yearGridStart) state.yearGridStart -= 3;
+           else if (state.focusedIdx >= state.yearGridStart + 12) state.yearGridStart += 3;
+        } else if (state.mode === 'month') {
+          state.focusedIdx = Math.max(0, Math.min(11, state.focusedIdx));
+        } else if (state.mode === 'day') {
+          const max = new Date(state.calDate.getFullYear(), state.calDate.getMonth() + 1, 0).getDate();
+          state.focusedIdx = Math.max(1, Math.min(max, state.focusedIdx));
+        }
+        
+        renderPicker();
+        e.preventDefault();
+      } else {
+        switch (e.key) {
+          case 'ArrowUp': navigate(-1); e.preventDefault(); break;
+          case 'ArrowDown': navigate(1); e.preventDefault(); break;
+          case 'Enter':
+            if (document.activeElement === elements.dobTrigger) openCalendar('dob');
+            else if (document.activeElement === elements.ndateTrigger) openCalendar('ndate');
+            else if (document.activeElement === elements.result) calculateAge();
+            break;
+          case 'SoftLeft':
+          case 'Escape': calculateAge(); break;
+          case 'SoftRight': window.history.back(); break;
+        }
+      }
+    }
+
+    function navigate(dir) {
+      const items = document.querySelectorAll('.nav-item');
+      let idx = Array.from(items).indexOf(document.activeElement);
+      idx = (idx + dir + items.length) % items.length;
+      items[idx].focus();
+      // Ensure native scroll keeps the focused element fully in view
+      items[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('keydown', handleKeydown);
+  </script>
 </body>
 </html>
