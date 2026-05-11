@@ -346,7 +346,7 @@
           case 'ArrowDown': state.focusedIdx += (state.mode === 'day' ? 7 : 3); break;
           case 'ArrowLeft': state.focusedIdx -= 1; break;
           case 'ArrowRight': state.focusedIdx += 1; break;
-          case 'Escape': case 'SoftLeft': handlePickerSelection(); e.preventDefault(); return;
+          case 'Escape': case 'Enter': case 'SoftLeft': handlePickerSelection(); e.preventDefault(); return;
           case 'SoftRight': closeModal(); e.preventDefault(); return;
         }
         
