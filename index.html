@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Pro Age Calc - Cloud Phone</title>
+  <title>Age Calculator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -344,8 +344,8 @@
           case 'ArrowDown': state.focusedIdx += (state.mode === 'day' ? 7 : 3); break;
           case 'ArrowLeft': state.focusedIdx -= 1; break;
           case 'ArrowRight': state.focusedIdx += 1; break;
-          case 'Enter': case 'SoftLeft': handlePickerSelection(); e.preventDefault(); return;
-          case 'Escape': case 'SoftRight': closeModal(); e.preventDefault(); return;
+          case 'Escape': case 'SoftLeft': handlePickerSelection(); e.preventDefault(); return;
+          case 'SoftRight': closeModal(); e.preventDefault(); return;
         }
         
         if (state.mode === 'year') {
@@ -364,13 +364,12 @@
         switch (e.key) {
           case 'ArrowUp': navigate(-1); e.preventDefault(); break;
           case 'ArrowDown': navigate(1); e.preventDefault(); break;
-          case 'Enter':
+          case 'Escape':
           case 'SoftLeft': // Both Enter and LSK Calculate from anywhere
             if (document.activeElement === elements.dobTrigger) openCalendar('dob');
             else if (document.activeElement === elements.ndateTrigger) openCalendar('ndate');
             else calculateAge();
             break;
-          case 'Escape':
           case 'SoftRight': 
             window.history.back(); 
             break;
