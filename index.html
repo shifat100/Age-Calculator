@@ -346,7 +346,7 @@
           case 'ArrowDown': state.focusedIdx += (state.mode === 'day' ? 7 : 3); break;
           case 'ArrowLeft': state.focusedIdx -= 1; break;
           case 'ArrowRight': state.focusedIdx += 1; break;
-          case 'Escape': case 'Enter': case 'SoftLeft': handlePickerSelection(); e.preventDefault(); return;
+          case 'Escape': case 'SoftLeft': handlePickerSelection(); e.preventDefault(); return;
           case 'SoftRight': closeModal(); e.preventDefault(); return;
         }
         
@@ -367,6 +367,7 @@
           case 'ArrowUp': navigate(-1); e.preventDefault(); break;
           case 'ArrowDown': navigate(1); e.preventDefault(); break;
           case 'Escape':
+          case 'Enter':
           case 'SoftLeft': // Both Enter and LSK Calculate from anywhere
             if (document.activeElement === elements.dobTrigger) openCalendar('dob');
             else if (document.activeElement === elements.ndateTrigger) openCalendar('ndate');
