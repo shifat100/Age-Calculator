@@ -396,7 +396,7 @@
     document.addEventListener('keydown', handleKeydown);
     window.addEventListener("back", (event) => {
   event.preventDefault();
-  // Handle SoftRight
+  simulateNaturalPress('SoftRight',0);
 });
 
     getCloudAd({
