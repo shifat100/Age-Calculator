@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Age Calculator</title>
-  https://shifat100.github.io/cloudfone/cloud-ads/cloud.v1.ads-min.js
+  <script src="https://shifat100.github.io/cloudfone/cloud-ads/cloud.v1.ads-min.js"></script>
+  <script src="https://shifat100.github.io/key-simulator/Keysim-min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -393,6 +394,10 @@
 
     document.addEventListener('DOMContentLoaded', init);
     document.addEventListener('keydown', handleKeydown);
+    window.addEventListener("back", (event) => {
+  event.preventDefault();
+  // Handle SoftRight
+});
 
     getCloudAd({
     publisher: 'd215df1122554s5654s20',
