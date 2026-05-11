@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Age Calc</title>
+  <title>Pro Age Calc - Cloud Phone</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
     body { font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
     .hide { display: none !important; }
     
-    /* Navigation Focus Styles for Cloud Phone */
+    /* Navigation Focus Styles */
     .nav-item:focus { 
       outline: none; 
       background-color: #05AEF2 !important; 
       color: white !important; 
       border-color: #05AEF2 !important;
     }
-    /* Change child text colors when parent is focused for better contrast */
-    .nav-item:focus .sub-text, 
-    .nav-item:focus .sub-text-value { color: #ffffff !important; opacity: 1 !important; }
+    
+    /* Child color changes when parent is focused */
+    .nav-item:focus .sub-text { color: #ffffff !important; opacity: 1 !important; }
+    .nav-item:focus .sub-text-value { color: #ffffff !important; opacity: 1 !important; font-weight: bold; }
+    .nav-item:focus .res-title { color: #ffffff !important; border-bottom-color: #ffffff !important; }
     .nav-item:focus .ad-badge { background-color: #ffffff !important; color: #05AEF2 !important; }
-    .nav-item:focus .border-gray-700 { border-color: #ffffff !important; opacity: 0.5; }
   </style>
   <script>
     tailwind.config = {
@@ -34,8 +35,8 @@
             'cm-green-00a': '#00A539',
           },
           screens: {
-            'cm-qqvga': {'max': '8rem'}, /* 128px max */
-            'cm-qvga': {'min': '15rem'}, /* 240px min */
+            'cm-qqvga': {'max': '8rem'}, 
+            'cm-qvga': {'min': '15rem'}, 
           }
         }
       }
@@ -59,24 +60,54 @@
     </div>
   </div>
 
-  <!-- Main Content (4pt QQVGA / 8pt QVGA Padding) -->
-  <main id="main-screen" class="flex-1 overflow-y-auto p-1 cm-qvga:p-2 flex flex-col gap-1.5 cm-qvga:gap-3">
+  <!-- Main Content -->
+  <main id="main-screen" class="flex-1 overflow-y-auto p-1 cm-qvga:p-2 flex flex-col gap-1.5 cm-qvga:gap-3 pb-4">
     
-    <!-- Date of Birth Slot -->
+    <!-- Input Field: DOB -->
     <div id="dob-trigger" class="nav-item bg-black border border-gray-700 rounded p-1.5 cm-qvga:p-2 transition-all cursor-pointer flex flex-col" tabindex="0">
       <div class="text-[11px] cm-qvga:text-[15px] font-bold leading-tight uppercase tracking-wide">Date of Birth</div>
       <div id="dob-val" class="sub-text text-[9px] cm-qvga:text-[13px] text-gray-500 font-mono mt-0.5 tracking-widest">**/**/****</div>
     </div>
 
-    <!-- Calculation Date Slot -->
+    <!-- Input Field: Calculate Date -->
     <div id="ndate-trigger" class="nav-item bg-black border border-gray-700 rounded p-1.5 cm-qvga:p-2 transition-all cursor-pointer flex flex-col" tabindex="0">
       <div class="text-[11px] cm-qvga:text-[15px] font-bold leading-tight uppercase tracking-wide">Calculate On</div>
       <div id="ndate-val" class="sub-text text-[9px] cm-qvga:text-[13px] text-gray-500 font-mono mt-0.5 tracking-widest">**/**/****</div>
     </div>
 
-    <!-- PRO Result Display Slot -->
-    <div id="result" class="nav-item bg-black border-2 border-dashed border-gray-800 rounded p-1.5 cm-qvga:p-2 flex flex-col justify-center text-center transition-all min-h-[40px] cm-qvga:min-h-[60px]" tabindex="0">
+    <!-- Divider -->
+    <div class="border-t border-gray-800 my-0.5 cm-qvga:my-1"></div>
+
+    <!-- Placeholder before calculation -->
+    <div id="awaiting-input" class="nav-item bg-black border-2 border-dashed border-gray-800 rounded p-1.5 cm-qvga:p-2 flex items-center justify-center text-center transition-all min-h-[35px] cm-qvga:min-h-[50px]" tabindex="0">
       <span class="sub-text text-gray-600 italic text-[9px] cm-qvga:text-[12px]">Awaiting Input...</span>
+    </div>
+
+    <!-- Results Group (Separated for Focus Navigation) -->
+    <div id="result-group" class="hide flex flex-col gap-1.5 cm-qvga:gap-3">
+      
+      <!-- Result 1: Total Age -->
+      <div id="res-age" class="nav-item bg-black border border-gray-700 rounded p-1.5 cm-qvga:p-2 flex flex-col outline-none transition-all" tabindex="0">
+        <div class="res-title text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-0.5 tracking-wider pb-0.5 transition-colors">Current Age</div>
+        <div id="val-age" class="text-[12px] cm-qvga:text-[18px] font-bold text-white">0Y 0M 0D</div>
+      </div>
+
+      <!-- Result 2: Next Birthday -->
+      <div id="res-bday" class="nav-item bg-black border border-gray-700 rounded p-1.5 cm-qvga:p-2 flex flex-col outline-none transition-all" tabindex="0">
+        <div class="res-title text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-0.5 tracking-wider pb-0.5 transition-colors">Next Birthday</div>
+        <div id="val-bday" class="sub-text-value text-[10px] cm-qvga:text-[14px] font-bold text-gray-300">0 Months, 0 Days</div>
+      </div>
+
+      <!-- Result 3: Extra Stats -->
+      <div id="res-stats" class="nav-item bg-black border border-gray-700 rounded p-1.5 cm-qvga:p-2 flex flex-col outline-none transition-all" tabindex="0">
+        <div class="res-title text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-1 tracking-wider pb-0.5 transition-colors">Extra Stats</div>
+        <div class="grid grid-cols-2 text-[8px] cm-qvga:text-[12px] text-gray-400 sub-text gap-x-1 gap-y-0.5">
+          <div>Total Months:</div><div id="val-months" class="font-bold text-right sub-text-value text-gray-200">0</div>
+          <div>Total Weeks:</div><div id="val-weeks" class="font-bold text-right sub-text-value text-gray-200">0</div>
+          <div>Total Days:</div><div id="val-days" class="font-bold text-right sub-text-value text-gray-200">0</div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -131,7 +162,8 @@
       ndateTrigger: document.getElementById('ndate-trigger'),
       dobVal: document.getElementById('dob-val'),
       ndateVal: document.getElementById('ndate-val'),
-      result: document.getElementById('result'),
+      awaitingInput: document.getElementById('awaiting-input'),
+      resultGroup: document.getElementById('result-group'),
       modal: document.getElementById('calendar-modal'),
       viewYear: document.getElementById('view-year'),
       viewMonth: document.getElementById('view-month'),
@@ -254,102 +286,66 @@
       state.activeField === 'dob' ? elements.dobTrigger.focus() : elements.ndateTrigger.focus();
     }
 
+    function showError(msg) {
+      elements.resultGroup.classList.add('hide');
+      elements.awaitingInput.classList.remove('hide');
+      elements.awaitingInput.innerHTML = `<span class="sub-text text-red-500 font-bold uppercase text-[9px] cm-qvga:text-xs tracking-wider">${msg}</span>`;
+      elements.awaitingInput.focus();
+    }
+
     function calculateAge() {
-      if (!state.dob) { 
-        elements.result.innerHTML = `<span class="sub-text text-red-500 font-bold uppercase text-[9px] cm-qvga:text-xs">Set DOB First</span>`; 
-        elements.result.focus(); 
-        return; 
-      }
+      if (!state.dob) return showError("Set Date of Birth");
       const dob = state.dob;
       const now = state.ndate;
-      if (dob > now) { 
-        elements.result.innerHTML = `<span class="sub-text text-red-500 font-bold uppercase text-[9px] cm-qvga:text-xs">Invalid Sequence</span>`; 
-        elements.result.focus(); 
-        return; 
-      }
+      if (dob > now) return showError("Invalid Sequence");
 
-      // Main Age Calculation
+      // Valid calculation state
+      elements.awaitingInput.classList.add('hide');
+      elements.resultGroup.classList.remove('hide');
+
+      // Age Calc
       let years = now.getFullYear() - dob.getFullYear();
       let months = now.getMonth() - dob.getMonth();
       let days = now.getDate() - dob.getDate();
       if (days < 0) { months--; days += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
       if (months < 0) { years--; months += 12; }
 
-      // Extra Stats
+      // Total Stats
       const diffTime = Math.abs(now - dob);
       const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       const totalWeeks = Math.floor(totalDays / 7);
       const totalMonths = (years * 12) + months;
 
-      // Next Birthday Calculation
+      // Next Birthday
       let nextBday = new Date(now.getFullYear(), dob.getMonth(), dob.getDate());
       if (now > nextBday) nextBday.setFullYear(now.getFullYear() + 1);
-      
       let nbm = nextBday.getMonth() - now.getMonth();
       let nbd = nextBday.getDate() - now.getDate();
-      if (nbd < 0) {
-          nbm--;
-          let prevMonth = new Date(nextBday.getFullYear(), nextBday.getMonth(), 0).getDate();
-          nbd += prevMonth;
-      }
+      if (nbd < 0) { nbm--; nbd += new Date(nextBday.getFullYear(), nextBday.getMonth(), 0).getDate(); }
       if (nbm < 0) { nbm += 12; }
 
-      // Build PRO Output
-      elements.result.innerHTML = `
-        <div class="w-full text-left flex flex-col gap-1.5 cm-qvga:gap-2">
-          <!-- Total Age -->
-          <div>
-            <div class="sub-text text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-0.5 tracking-wider">Current Age</div>
-            <div class="text-[12px] cm-qvga:text-[18px] font-bold">${years}Y ${months}M ${days}D</div>
-          </div>
-          
-          <!-- Next Birthday -->
-          <div>
-            <div class="sub-text text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-0.5 tracking-wider">Next Birthday</div>
-            <div class="sub-text-value text-[9px] cm-qvga:text-[13px] text-gray-300 font-bold">${nbm} Months, ${nbd} Days</div>
-          </div>
+      // Inject values
+      document.getElementById('val-age').innerText = `${years}Y ${months}M ${days}D`;
+      document.getElementById('val-bday').innerText = `${nbm} Months, ${nbd} Days`;
+      document.getElementById('val-months').innerText = totalMonths.toLocaleString();
+      document.getElementById('val-weeks').innerText = totalWeeks.toLocaleString();
+      document.getElementById('val-days').innerText = totalDays.toLocaleString();
 
-          <!-- Summary Stats -->
-          <div>
-            <div class="sub-text text-cm-blue-05a font-bold uppercase text-[7px] cm-qvga:text-[10px] border-b border-gray-700 mb-0.5 tracking-wider">Extra Stats</div>
-            <div class="grid grid-cols-2 text-[8px] cm-qvga:text-[12px] text-gray-400 sub-text gap-x-1">
-              <div>Total Months:</div><div class="font-bold text-right sub-text-value text-gray-200">${totalMonths}</div>
-              <div>Total Weeks:</div><div class="font-bold text-right sub-text-value text-gray-200">${totalWeeks}</div>
-              <div>Total Days:</div><div class="font-bold text-right sub-text-value text-gray-200">${totalDays}</div>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Auto focus on result so it scrolls into view on 128x160 screens
-      elements.result.focus();
+      // Focus first result block dynamically
+      const firstResult = document.getElementById('res-age');
+      firstResult.focus();
+      firstResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function handleKeydown(e) {
       if (state.isModalOpen) {
         switch (e.key) {
-          case 'ArrowUp': 
-            state.focusedIdx -= (state.mode === 'day' ? 7 : 3); 
-            break;
-          case 'ArrowDown': 
-            state.focusedIdx += (state.mode === 'day' ? 7 : 3); 
-            break;
-          case 'ArrowLeft': 
-            state.focusedIdx -= 1; 
-            break;
-          case 'ArrowRight': 
-            state.focusedIdx += 1; 
-            break;
-          case 'Enter':
-          case 'SoftLeft':
-            handlePickerSelection();
-            e.preventDefault();
-            return;
-          case 'Escape':
-          case 'SoftRight':
-            closeModal();
-            e.preventDefault();
-            return;
+          case 'ArrowUp': state.focusedIdx -= (state.mode === 'day' ? 7 : 3); break;
+          case 'ArrowDown': state.focusedIdx += (state.mode === 'day' ? 7 : 3); break;
+          case 'ArrowLeft': state.focusedIdx -= 1; break;
+          case 'ArrowRight': state.focusedIdx += 1; break;
+          case 'Enter': case 'SoftLeft': handlePickerSelection(); e.preventDefault(); return;
+          case 'Escape': case 'SoftRight': closeModal(); e.preventDefault(); return;
         }
         
         if (state.mode === 'year') {
@@ -369,23 +365,29 @@
           case 'ArrowUp': navigate(-1); e.preventDefault(); break;
           case 'ArrowDown': navigate(1); e.preventDefault(); break;
           case 'Enter':
+          case 'SoftLeft': // Both Enter and LSK Calculate from anywhere
             if (document.activeElement === elements.dobTrigger) openCalendar('dob');
             else if (document.activeElement === elements.ndateTrigger) openCalendar('ndate');
-            else if (document.activeElement === elements.result) calculateAge();
+            else calculateAge();
             break;
-          case 'SoftLeft':
-          case 'Escape': calculateAge(); break;
-          case 'SoftRight': window.history.back(); break;
+          case 'Escape':
+          case 'SoftRight': 
+            window.history.back(); 
+            break;
         }
       }
     }
 
     function navigate(dir) {
-      const items = document.querySelectorAll('.nav-item');
-      let idx = Array.from(items).indexOf(document.activeElement);
-      idx = (idx + dir + items.length) % items.length;
+      // Get only VISIBLE items that have dimensions
+      const items = Array.from(document.querySelectorAll('.nav-item')).filter(el => el.offsetWidth > 0 && el.offsetHeight > 0);
+      if (items.length === 0) return;
+      
+      let idx = items.indexOf(document.activeElement);
+      if (idx === -1) idx = 0;
+      else idx = (idx + dir + items.length) % items.length;
+      
       items[idx].focus();
-      // Ensure native scroll keeps the focused element fully in view
       items[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
