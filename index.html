@@ -156,7 +156,7 @@
       mode: 'year', 
       isModalOpen: false
     };
-
+var cad=null;
     const months =["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     const elements = {
@@ -371,6 +371,7 @@
           case 'SoftLeft': // Both Enter and LSK Calculate from anywhere
             if (document.activeElement === elements.dobTrigger) openCalendar('dob');
             else if (document.activeElement === elements.ndateTrigger) openCalendar('ndate');
+            else if (document.activeElement.classLists.includes('ad-container')) cad.call('click');
             else calculateAge();
             break;
           case 'SoftRight': 
@@ -403,7 +404,7 @@
     getCloudAd({
     publisher: 'd215df1122554s5654s20',
     container: document.getElementById('ad-container'),
-    onready: ad => { ad.call('display'); }
+    onready: ad => { ad.call('display'); cad= ad; }
 });
 
     getCloudAd({
@@ -415,7 +416,7 @@
          getCloudAd({
     publisher: 'd215df1122554s5654s20',
     container: document.getElementById('ad-container'),
-    onready: ad => { ad.call('display'); }
+    onready: ad => { ad.call('display');  cad= ad;}
 });
 
     }, 40000);
