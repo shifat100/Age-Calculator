@@ -162,6 +162,7 @@ var cad=null;
     const elements = {
       dobTrigger: document.getElementById('dob-trigger'),
       ndateTrigger: document.getElementById('ndate-trigger'),
+      adContainer: document.getElementById('ad-container'),
       dobVal: document.getElementById('dob-val'),
       ndateVal: document.getElementById('ndate-val'),
       awaitingInput: document.getElementById('awaiting-input'),
@@ -371,7 +372,7 @@ var cad=null;
           case 'SoftLeft': // Both Enter and LSK Calculate from anywhere
             if (document.activeElement === elements.dobTrigger) openCalendar('dob');
             else if (document.activeElement === elements.ndateTrigger) openCalendar('ndate');
-            else if (document.activeElement.id = 'ad-container') cad.call('click');
+            else if (document.activeElement === elements.adContainer) cad.call('click');
             else calculateAge();
             break;
           case 'SoftRight': 
