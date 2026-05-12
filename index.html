@@ -371,7 +371,7 @@ var cad=null;
           case 'SoftLeft': // Both Enter and LSK Calculate from anywhere
             if (document.activeElement === elements.dobTrigger) openCalendar('dob');
             else if (document.activeElement === elements.ndateTrigger) openCalendar('ndate');
-            else if (document.activeElement.classLists.includes('ad-container')) cad.call('click');
+            else if (document.activeElement.id = 'ad-container') cad.call('click');
             else calculateAge();
             break;
           case 'SoftRight': 
